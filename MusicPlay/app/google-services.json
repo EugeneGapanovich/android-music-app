@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "315582838132",
+    "firebase_url": "https://musicplayapp-61af9.firebaseio.com",
+    "project_id": "musicplayapp-61af9",
+    "storage_bucket": "musicplayapp-61af9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315582838132:android:e27170297348ee81ece821",
+        "android_client_info": {
+          "package_name": "by.gapanovich.musicplay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "315582838132-k1e15moqmltea5ho3lvb1luaouv81rht.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "by.gapanovich.musicplay",
+            "certificate_hash": "67e1c994570f661a31e7cf75b8b1d52ca38d69ad"
+          }
+        },
+        {
+          "client_id": "315582838132-opljd8h4i9fpmo7r03g77vc3s3mcdkht.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhF1viaDHsfoYxFEMSj3AfbJL-xUvStsg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "315582838132-opljd8h4i9fpmo7r03g77vc3s3mcdkht.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
