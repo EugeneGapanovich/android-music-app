@@ -9,7 +9,7 @@ public class MusicInfo implements Serializable {
     private String artistName;
     private String songName;
     private String songUrl;
-    
+
 
     public MusicInfo(String albumImage, String artistName, String songName, String songUrl) {
         this.albumImage = albumImage;
