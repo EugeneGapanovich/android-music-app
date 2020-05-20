@@ -1,5 +1,6 @@
 package by.gapanovich.musicplay;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,137 +36,164 @@ public class MusicList extends AppCompatActivity {
 
     private static final String DEEZER_URL = "https://api.deezer.com/search/?q=";
     private static final String INDEX_URL = "&index=0";
-    private static final String LIMIT_URL = "&limit=2";
+    private static final String LIMIT_URL = "&limit=5";
     private static final String OUTPUT_URL = "&output=json";
 
-    private static final ArrayList<ImageView> IMAGES_ARRAY = new ArrayList<>();
-    private static final ArrayList<TextView> ARTISTS_ARRAY = new ArrayList<>();
-    private static final ArrayList<TextView> SONGS_ARRAY = new ArrayList<>();
+    ArrayList<ImageView> IMAGES_ARRAY;
+    ArrayList<TextView> ARTISTS_ARRAY;
+    ArrayList<TextView> SONGS_ARRAY;
+    ArrayList<MediaPlayer> MEDIAPLAYERS_ARRAY;
     ArrayList<MusicInfo> MUSICS_ARRAY;
-    ArrayList<String> urls;
+    boolean ready = false;
+
 
     private Button btnBack;
-    private static RequestQueue mQueue;
+    RequestQueue mQueue;
 
 
     private ImageView vAlbum1;
     private ImageView vAlbum2;
-//    private ImageView vAlbum3;
-//    private ImageView vAlbum4;
-//    private ImageView vAlbum5;
+    private ImageView vAlbum3;
+    private ImageView vAlbum4;
+    private ImageView vAlbum5;
 
     private TextView vArtist1;
     private TextView vArtist2;
-//    private TextView vArtist3;
-//    private TextView vArtist4;
-//    private TextView vArtist5;
+    private TextView vArtist3;
+    private TextView vArtist4;
+    private TextView vArtist5;
 
     private TextView vSong1;
     private TextView vSong2;
-//    private TextView vSong3;
-//    private TextView vSong4;
-//    private TextView vSong5;
+    private TextView vSong3;
+    private TextView vSong4;
+    private TextView vSong5;
 
     private Button bPlay1;
     private Button bPlay2;
-//    private Button bPlay3;
-//    private Button bPlay4;
-//    private Button bPlay5;
+    private Button bPlay3;
+    private Button bPlay4;
+    private Button bPlay5;
 
-    private static MediaPlayer mediaPlayer1;
-    private static MediaPlayer mediaPlayer2;
-//    private static MediaPlayer mediaPlayer3;
-//    private static MediaPlayer mediaPlayer4;
-//    private static MediaPlayer mediaPlayer5;
+    MediaPlayer mediaPlayer1;
+    MediaPlayer mediaPlayer2;
+    MediaPlayer mediaPlayer3;
+    MediaPlayer mediaPlayer4;
+    MediaPlayer mediaPlayer5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music_list);
-        mQueue = Volley.newRequestQueue(this);
 
+        IMAGES_ARRAY = new ArrayList<>();
+        ARTISTS_ARRAY = new ArrayList<>();
+        SONGS_ARRAY = new ArrayList<>();
+        MUSICS_ARRAY = new ArrayList<>();
+        MEDIAPLAYERS_ARRAY = new ArrayList<>();
 
-        btnBack = (Button)findViewById(R.id.button_back_to_search);
+        btnBack = (Button) findViewById(R.id.button_back_to_search);
 
         vAlbum1 = (ImageView) findViewById(R.id.album_view1);
         vAlbum2 = (ImageView) findViewById(R.id.album_view2);
-//        vAlbum3 = (ImageView) findViewById(R.id.album_view3);
-//        vAlbum4 = (ImageView) findViewById(R.id.album_view4);
-//        vAlbum5 = (ImageView) findViewById(R.id.album_view5);
+        vAlbum3 = (ImageView) findViewById(R.id.album_view3);
+        vAlbum4 = (ImageView) findViewById(R.id.album_view4);
+        vAlbum5 = (ImageView) findViewById(R.id.album_view5);
 
-        vArtist1 = (TextView)findViewById(R.id.artist_view1);
-        vArtist2 = (TextView)findViewById(R.id.artist_view2);
-//        vArtist3 = (TextView)findViewById(R.id.artist_view3);
-//        vArtist4 = (TextView)findViewById(R.id.artist_view4);
-//        vArtist5 = (TextView)findViewById(R.id.artist_view5);
+        vArtist1 = (TextView) findViewById(R.id.artist_view1);
+        vArtist2 = (TextView) findViewById(R.id.artist_view2);
+        vArtist3 = (TextView) findViewById(R.id.artist_view3);
+        vArtist4 = (TextView) findViewById(R.id.artist_view4);
+        vArtist5 = (TextView) findViewById(R.id.artist_view5);
 
         vSong1 = (TextView) findViewById(R.id.song_name_view1);
         vSong2 = (TextView) findViewById(R.id.song_name_view2);
-//        vSong3 = (TextView) findViewById(R.id.song_name_view3);
-//        vSong4 = (TextView) findViewById(R.id.song_name_view4);
-//        vSong5 = (TextView) findViewById(R.id.song_name_view5);
-
+        vSong3 = (TextView) findViewById(R.id.song_name_view3);
+        vSong4 = (TextView) findViewById(R.id.song_name_view4);
+        vSong5 = (TextView) findViewById(R.id.song_name_view5);
 
         bPlay1 = (Button) findViewById(R.id.play_music1);
         bPlay2 = (Button) findViewById(R.id.play_music2);
-//        bPlay3 = (Button) findViewById(R.id.play_music3);
-//        bPlay4 = (Button) findViewById(R.id.play_music4);
-//        bPlay5 = (Button) findViewById(R.id.play_music5);
-
-        IMAGES_ARRAY.add(vAlbum1);
-        IMAGES_ARRAY.add(vAlbum2);
-//        IMAGES_ARRAY.add(vAlbum3);
-//        IMAGES_ARRAY.add(vAlbum4);
-//        IMAGES_ARRAY.add(vAlbum5);
-
-        ARTISTS_ARRAY.add(vArtist1);
-        ARTISTS_ARRAY.add(vArtist2);
-//        ARTISTS_ARRAY.add(vArtist3);
-//        ARTISTS_ARRAY.add(vArtist4);
-//        ARTISTS_ARRAY.add(vArtist5);
-
-        SONGS_ARRAY.add(vSong1);
-        SONGS_ARRAY.add(vSong2);
-//        SONGS_ARRAY.add(vSong3);
-//        SONGS_ARRAY.add(vSong4);
-//        SONGS_ARRAY.add(vSong5);
-
-
-        urls = new ArrayList<>();
-        MUSICS_ARRAY = new ArrayList<>();
-        Bundle bundle = getIntent().getExtras();
-        String value = bundle.getString("message");
-        final String[] array = new String[2];
-        jsonParse(value);
-        urls.add(MUSICS_ARRAY.get(0).getSongUrl());
-        urls.add(MUSICS_ARRAY.get(1).getSongUrl());
-        array[0] = MUSICS_ARRAY.get(0).getSongUrl();
-        array[1] = MUSICS_ARRAY.get(1).getSongUrl();
-
-
+        bPlay3 = (Button) findViewById(R.id.play_music3);
+        bPlay4 = (Button) findViewById(R.id.play_music4);
+        bPlay5 = (Button) findViewById(R.id.play_music5);
 
         mediaPlayer1 = new MediaPlayer();
         mediaPlayer2 = new MediaPlayer();
-//        mediaPlayer3 = new MediaPlayer();
-//        mediaPlayer4 = new MediaPlayer();
-//        mediaPlayer5 = new MediaPlayer();
+        mediaPlayer3 = new MediaPlayer();
+        mediaPlayer4 = new MediaPlayer();
+        mediaPlayer5 = new MediaPlayer();
+
+        IMAGES_ARRAY.add(vAlbum1);
+        IMAGES_ARRAY.add(vAlbum2);
+        IMAGES_ARRAY.add(vAlbum3);
+        IMAGES_ARRAY.add(vAlbum4);
+        IMAGES_ARRAY.add(vAlbum5);
+
+        ARTISTS_ARRAY.add(vArtist1);
+        ARTISTS_ARRAY.add(vArtist2);
+        ARTISTS_ARRAY.add(vArtist3);
+        ARTISTS_ARRAY.add(vArtist4);
+        ARTISTS_ARRAY.add(vArtist5);
+
+        SONGS_ARRAY.add(vSong1);
+        SONGS_ARRAY.add(vSong2);
+        SONGS_ARRAY.add(vSong3);
+        SONGS_ARRAY.add(vSong4);
+        SONGS_ARRAY.add(vSong5);
+
+        MEDIAPLAYERS_ARRAY.add(mediaPlayer1);
+        MEDIAPLAYERS_ARRAY.add(mediaPlayer2);
+        MEDIAPLAYERS_ARRAY.add(mediaPlayer3);
+        MEDIAPLAYERS_ARRAY.add(mediaPlayer4);
+        MEDIAPLAYERS_ARRAY.add(mediaPlayer5);
+
+        Bundle bundle = getIntent().getExtras();
+        String value = bundle.getString("message");
+
+        jsonParse(value);
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                prepareMediaPlayer(MUSICS_ARRAY, MEDIAPLAYERS_ARRAY);
+            }
+        };
 
 
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    try {
+                        while (!showConnection()) {
+                            wait(1000);
+                        }
+                    } catch (Exception e) {
+                    }
+                    handler.sendEmptyMessage(0);
+                }
 
-        prepareMediaPlayer(urls.get(0), urls.get(1));
+            }
+        });
+        thread.start();
+
+
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent backToSearchActivity = new Intent(".SearchActivity");
-//                if(mediaPlayer.isPlaying()){
-//                    mediaPlayer.stop();
-//                    mediaPlayer.release();
-//                }
+                for(int i = 0; i < MEDIAPLAYERS_ARRAY.size(); i++){
+                    if(MEDIAPLAYERS_ARRAY.get(i).isPlaying()){
+                        MEDIAPLAYERS_ARRAY.get(i).stop();
+                        MEDIAPLAYERS_ARRAY.get(i).release();
+                    }
+                }
                 clearTextView(ARTISTS_ARRAY);
                 clearTextView(SONGS_ARRAY);
                 clearImageView(IMAGES_ARRAY);
                 clearMusicArray(MUSICS_ARRAY);
+                clearMediaPlayer(MEDIAPLAYERS_ARRAY);
                 startActivity(backToSearchActivity);
             }
         });
@@ -172,11 +201,11 @@ public class MusicList extends AppCompatActivity {
         bPlay1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mediaPlayer1.isPlaying()) {
-                    mediaPlayer1.pause();
+                if (MEDIAPLAYERS_ARRAY.get(0).isPlaying()) {
+                    MEDIAPLAYERS_ARRAY.get(0).pause();
                     bPlay1.setText("PLAY");
                 } else {
-                    mediaPlayer1.start();
+                    MEDIAPLAYERS_ARRAY.get(0).start();
                     bPlay1.setText("PAUSE");
                 }
             }
@@ -184,12 +213,48 @@ public class MusicList extends AppCompatActivity {
         bPlay2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mediaPlayer2.isPlaying()) {
-                    mediaPlayer2.pause();
+                if (MEDIAPLAYERS_ARRAY.get(1).isPlaying()) {
+                    MEDIAPLAYERS_ARRAY.get(1).pause();
                     bPlay2.setText("PLAY");
                 } else {
-                    mediaPlayer2.start();
+                    MEDIAPLAYERS_ARRAY.get(1).start();
                     bPlay2.setText("PAUSE");
+                }
+            }
+        });
+        bPlay3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MEDIAPLAYERS_ARRAY.get(2).isPlaying()) {
+                    MEDIAPLAYERS_ARRAY.get(2).pause();
+                    bPlay3.setText("PLAY");
+                } else {
+                    MEDIAPLAYERS_ARRAY.get(2).start();
+                    bPlay3.setText("PAUSE");
+                }
+            }
+        });
+        bPlay4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MEDIAPLAYERS_ARRAY.get(3).isPlaying()) {
+                    MEDIAPLAYERS_ARRAY.get(3).pause();
+                    bPlay4.setText("PLAY");
+                } else {
+                    MEDIAPLAYERS_ARRAY.get(3).start();
+                    bPlay4.setText("PAUSE");
+                }
+            }
+        });
+        bPlay5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (MEDIAPLAYERS_ARRAY.get(4).isPlaying()) {
+                    MEDIAPLAYERS_ARRAY.get(4).pause();
+                    bPlay5.setText("PLAY");
+                } else {
+                    MEDIAPLAYERS_ARRAY.get(4).start();
+                    bPlay5.setText("PAUSE");
                 }
             }
         });
@@ -197,13 +262,12 @@ public class MusicList extends AppCompatActivity {
 
 
 
-    public static void prepareMediaPlayer(String s1, String s2){
+    private void prepareMediaPlayer(ArrayList<MusicInfo> mInfo, ArrayList<MediaPlayer> mPlayer){
         try {
-            mediaPlayer1.setDataSource(s1);
-            mediaPlayer1.prepare();
-
-            mediaPlayer2.setDataSource(s2);
-            mediaPlayer2.prepare();
+            for(int i = 0; i < mPlayer.size(); i++){
+                mPlayer.get(i).setDataSource(mInfo.get(i).getSongUrl());
+                mPlayer.get(i).prepare();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -211,6 +275,8 @@ public class MusicList extends AppCompatActivity {
     }
 
     private void jsonParse(String artistName){
+        ready = false;
+        RequestQueue mQueue = Volley.newRequestQueue(MusicList.this);
         String url = DEEZER_URL + artistName + INDEX_URL + LIMIT_URL + OUTPUT_URL;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -237,19 +303,19 @@ public class MusicList extends AppCompatActivity {
                                 ARTISTS_ARRAY.get(i).setText(MUSICS_ARRAY.get(i).getArtistName());
                                 //Insert song name
                                 SONGS_ARRAY.get(i).setText(MUSICS_ARRAY.get(i).getSongName());
-                                //Insert url song
-                                //ssilki.add(preview);
+                                ready = true;
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
         });
 
         mQueue.add(request);
@@ -264,7 +330,10 @@ public class MusicList extends AppCompatActivity {
     private void clearImageView(ArrayList<ImageView> iViewArray){
         iViewArray.clear();
     }
+    private void clearMediaPlayer(ArrayList<MediaPlayer> mPlayerArray){mPlayerArray.clear();}
 
-
+    public boolean showConnection(){
+        return ready;
+    }
 
 }
