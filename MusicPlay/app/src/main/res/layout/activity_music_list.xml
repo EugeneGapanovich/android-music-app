@@ -18,7 +18,7 @@
         android:id="@+id/artist_view1"
         android:layout_toEndOf="@+id/album_view1"
         android:text="Artist1"
-        android:layout_marginTop="20sp"
+        android:layout_marginTop="10sp"
         android:layout_marginLeft="20sp"
         android:textSize="16sp"
         android:layout_width="wrap_content"
@@ -212,6 +212,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="29dp"
+        android:layout_marginBottom="10dp"
         android:text="Back" />
 </RelativeLayout>

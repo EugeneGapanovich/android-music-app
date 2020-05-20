@@ -297,7 +297,7 @@ public class MusicList extends AppCompatActivity {
                                         .load(MUSICS_ARRAY.get(i).getAlbumImage())
                                         .error(R.mipmap.ic_launcher)
                                         .placeholder(R.mipmap.ic_launcher)
-                                        .resize(170,170)
+                                        .resize(150,150)
                                         .into(IMAGES_ARRAY.get(i));
                                 //Insert artist name
                                 ARTISTS_ARRAY.get(i).setText(MUSICS_ARRAY.get(i).getArtistName());
